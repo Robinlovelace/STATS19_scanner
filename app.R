@@ -28,11 +28,11 @@ ui <- shinyUI(dashboardPage(skin = "blue",
                 selected = c(levels(data$severity)), multiple=T),
     hr(),
     menuItem("Casualty map", tabName = "map", icon = icon("fa fa-map-marker")),
-    menuItem("Borough statistics", tabName = "boroughs", icon = icon("fa fa-users")),
     menuItem("Temporal profile", tabName = "temporal", icon = icon("fa fa-clock-o")),
     menuItem("Demographics", tabName = "demographics", icon = icon("fa fa-users")),
     menuItem("Raw data", tabName = "data", icon = icon("th")),
-    menuItem("About", tabName = "about", icon = icon("fa fa-question")))),
+    menuItem("GitHub", icon = icon("fa fa-github-square"), 
+             href = "https://github.com/hpartridge/STATS19_scanner"))),
   dashboardBody(
     tabItems(
       tabItem(tabName = "map",
@@ -60,28 +60,7 @@ ui <- shinyUI(dashboardPage(skin = "blue",
                     plotOutput("ageband_severity")))
       ),
       tabItem(tabName = "data",
-              fluidRow(box(width = 12, DT::dataTableOutput("table")))),
-      tabItem(tabName = "about",
-              fluidRow(
-                column(12,
-                       h4(strong("About")),
-                       h5("This application is designed to allow the user to interrogate road traffic 
-                         collisions recorded in Greater London between 2005 and 2014."),
-                       h4(strong("How to use")),
-                       h5("The filter panel allows the user to plot road traffic collisions involving injury by year, mode and severity onto the map. 
-                           Details of each collision can be obtained by clicking on any of the points. 
-                           Information on the demographic and temporal profile of casualties are provided under the relevant tabs."),
-                       h4(strong("Data sources")),
-                       h5("STATS19 road traffic collision data for Greater London are available from",
-                         a("Transport for London", 
-                           href = "https://www.tfl.gov.uk/corporate/publications-and-reports/road-safety"),
-                         "and information about collision data can be found",
-                         a("here.", 
-                           href = "https://www.tfl.gov.uk/cdn/static/cms/documents/collision-data-guide.pdf")),
-                       h4(strong("Code")),
-                       h5("The R code used to create this application can be found on ",
-                          a("GitHub", 
-                            href = "https://github.com/hpartridge/collision_mapper")))))
+              fluidRow(box(width = 12, DT::dataTableOutput("table"))))
               ))))
 
 
@@ -103,27 +82,6 @@ leaflet(casualties()) %>%  addProviderTiles("CartoDB.Positron") %>%
         leafletProxy("map", data = casualties()) %>%
           addProviderTiles("CartoDB.Positron") %>% 
           addCircles(~long, ~lat, radius = 6, color = ~pal(severity), fillOpacity = 0.3, opacity = 0.5, popup = ~text)
-  })
-
-## BOROUGH STATISTICS ##
- 
-   output$borough <- renderPlot({
-    borough_count <- casualties() %>%
-      group_by(severity, borough) %>%
-      summarise(count = n())
-    ggplot(borough_count, aes(x=reorder(borough, count, FUN=sum), y = count, fill=severity)) +
-      geom_bar(color="white", stat="identity") +
-      scale_y_continuous(breaks= pretty_breaks()) +
-      scale_fill_manual(values=c("black", "red", "orange"), name="") +
-      ylab("") + xlab("") +
-      theme_bw() +
-      theme_bw() +
-      theme(legend.position = "bottom",
-            axis.line = element_line(colour = "black"),
-            panel.border = element_rect(colour = NA),
-            axis.text.x = element_text(angle = 90, hjust = 1),
-            panel.grid.major.x = element_line(colour=NA)) +
-      coord_flip()
   })
   
 ## TEMPORAL PROFILE ##
