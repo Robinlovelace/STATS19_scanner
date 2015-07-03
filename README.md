@@ -10,6 +10,6 @@ The filter panel allows the user to plot road traffic collisions involving injur
 STATS19 road traffic collision data for Greater London are available from [Transport for London]
 (https://www.tfl.gov.uk/corporate/publications-and-reports/road-safety) and information about collision data can be found [here.] (https://www.tfl.gov.uk/cdn/static/cms/documents/collision-data-guide.pdf)
 
+<br>
 
-
-###### The app is available at [https://pracademic.shinyapps.io/STATS19_scanner] (https://pracademic.shinyapps.io/STATS19_scanner)
+##### The app is available at [https://pracademic.shinyapps.io/STATS19_scanner] (https://pracademic.shinyapps.io/STATS19_scanner)
