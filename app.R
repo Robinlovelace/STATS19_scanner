@@ -4,7 +4,6 @@ library(RColorBrewer) ; library(ggvis) ; library(scales) ; library(DT)
 # load the casualty data
 data <- readRDS(file="casualties_2005-14.Rda")
 data$year <- as.factor(data$year)
-data$agegroup <- as.factor(data$agegroup)
 data$severity <- factor(data$severity, levels= c("Fatal", "Serious", "Slight"), ordered = TRUE)
 data$day <- factor(data$day, levels=c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"), ordered=T)
 data$hour <- factor(data$hour)
@@ -47,9 +46,9 @@ ui <- shinyUI(dashboardPage(skin = "blue",
                                 ),
                                 tabItem(tabName = "boroughs",
                                         fluidRow(
-                                          box(title = "Top 10 boroughs", height = "auto", width = 2, solidHeader=TRUE, collapsible=TRUE,
+                                          box(title = "Top 10 boroughs", height = "auto", width = 3, solidHeader=TRUE, collapsible=TRUE,
                                               tableOutput("borough_stats")),
-                                          box(title = "Casualties by borough", width = 10, solidHeader=TRUE, collapsible=TRUE,
+                                          box(title = "Casualties by borough", width = 9, solidHeader=TRUE, collapsible=TRUE,
                                               ggvisOutput("borough_count")))
                                         
                                 ),

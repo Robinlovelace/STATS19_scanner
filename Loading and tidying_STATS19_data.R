@@ -1,7 +1,5 @@
 ## Loading and tidying STATS19 data ##
 
-## PART ONE: DATA LOADING ##
-
 # STEP 1: merging multiple years of casualty data and attendant data
 # rbind() is used to match casualty (and attendant) data because the variables are identical between years
 
@@ -19,8 +17,8 @@ casualty_2014 <- read.csv("https://tfl.gov.uk/cdn/static/cms/documents/2014-gla-
 
 # Merge the casualty data
 casualty <- do.call(rbind, list(casualty_2005, casualty_2006, casualty_2007, casualty_2008,
-                                  casualty_2009, casualty_2010, casualty_2011, casualty_2012,
-                                  casualty_2013, casualty_2014))
+                                casualty_2009, casualty_2010, casualty_2011, casualty_2012,
+                                casualty_2013, casualty_2014))
 
 rm(casualty_2005, casualty_2006, casualty_2007, casualty_2008, casualty_2009, casualty_2010, 
    casualty_2011, casualty_2012, casualty_2013, casualty_2014)
@@ -57,9 +55,7 @@ rm(attendant)
 boroughs <- read.csv("boroughs.csv", header = T)
 casualties <- merge(casualties, boroughs, "Borough.x")
 
-## PART TWO: DATA TIDYING ##
-
-# STEP 1: date/time variables
+# STEP 4: date/time variables
 # convert Accident.Date to a date
 casualties$Accident.Date <- as.Date(casualties$Accident.Date, "%d-%b-%y")
 # extract the year
@@ -77,7 +73,7 @@ casualties$Time <- gsub("[ [:punct:]]", "" , casualties$Time)
 casualties$Time <- gsub("(\\d\\d)(\\d\\d)", "\\1:\\2", casualties$Time)
 casualties$hour<- as.POSIXlt(casualties$Time, format="%H:%M")$hour
 
-# STEP 2: factor variables
+# STEP 5: factor variables
 # relabel the 'Casualty.Severity' categories
 casualties$Casualty.Severity <- factor(casualties$Casualty.Severity,
                                        levels= c("1 Fatal", "2 Serious", "3 Slight"),
@@ -96,27 +92,29 @@ casualties$Casualty.Sex <- factor(casualties$Casualty.Sex,
 casualties$Light.Conditions..Banded. <- factor(casualties$Light.Conditions..Banded.,
                                                levels= c("1 Daylight", "2 Dark"),
                                                labels= c("Daylight", "Dark"))
+
+# recode 'Casualty.Age' as NA when 'Casualty.Age..Banded.' is Unknown
+casualties$Casualty.Age[casualties$Casualty.Age == 0 & casualties$Casualty.Age..Banded. == "Unknown"] <- NA
 # create age bands
 bands <- c("0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39",
            "40-44","45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84")
 casualties$ageband <- cut(casualties$Casualty.Age, 
                           breaks=c(0,4,9,14,19,24,29,34,39,44,49,54,59,64,69,74,79,84), 
                           labels = bands)
-# create adult / child age group
-casualties$agegroup <- ifelse(casualties$Casualty.Age > 0 & casualties$Casualty.Age <= 15, "Child", 
-                              ifelse(casualties$Casualty.Age > 15 , "Adult", "Unknown age"))
 # add a text variable
+casualties$Accident.Severity <- factor(casualties$Accident.Severity,
+                                       levels= c("1 Fatal", "2 Serious", "3 Slight"),
+                                       labels= c("Fatal", "Serious", "Slight"))
 casualties_desc <- function(row)
   with(as.list(row), paste0("At ", (Time), " on ", format.Date(Accident.Date, "%A %d %B %Y"), 
-                            " a collision involving a ", 
-                            tolower(Mode.of.Travel),
-                            " occured. A ", tolower(Casualty.Sex), " aged ", (Casualty.Age), 
-                            " was ", tolower(Casualty.Severity), "ly injured."))
+                            " a ", tolower(Accident.Severity),
+                            " collision occured involving ", (No..of.Vehicles.in.Acc.), " vehicle(s) and ",
+                            (No..of.Casualties.in.Acc.), " casualtie(s)."))
 strs <- apply(casualties, 1, casualties_desc)
 names(strs) <- NULL
 casualties$text <- strs
 
-# STEP 3: selecting and renaming variables
+# STEP 6: selecting and renaming variables
 library(dplyr)
 casualties <- casualties %>% 
   select(AREFNO, 
@@ -125,12 +123,12 @@ casualties <- casualties %>%
          mode = Mode.of.Travel, 
          severity = Casualty.Severity, 
          light = Light.Conditions..Banded.,
-         sex = Casualty.Sex, ageband, agegroup,
+         sex = Casualty.Sex, ageband,
          borough = NAME, GSS_CODE,
          easting = Easting.x, northing = Northing.x, 
          text)
 
-# STEP 4: tidying spatial data
+# STEP 7: tidying spatial data
 # convert the casualties into a SpatialPointsDataFrame
 library(maptools)
 coords <- SpatialPoints(casualties[,c("easting","northing")])
@@ -145,5 +143,5 @@ casualties <- casualties %>%
   select(everything(), 
          long = easting.1, lat = northing.1)
 
-# STEP 5: export
+# STEP 8: export
 saveRDS(casualties, file="casualties_2005-14.Rda")
