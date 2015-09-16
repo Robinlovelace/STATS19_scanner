@@ -11,7 +11,7 @@ data$light <- ordered(data$light, levels = c("Dark", "Daylight"))
 boroughs <-  readOGR("boroughs.geojson", "OGRGeoJSON")
 
 
-ui <- shinyUI(dashboardPage(skin = "blue",
+ui <- shinyUI(dashboardPage(skin = "black",
                             dashboardHeader(title = "STATS19 scanner"),
                             dashboardSidebar(
                               sidebarMenu(
@@ -80,19 +80,19 @@ server <- function(input, output, session) {
   ## CASUALTY MAP ##
   
   output$map <- renderLeaflet({
-    leaflet(data) %>%  addProviderTiles("CartoDB.Positron") %>%
+    leaflet(data) %>%  addProviderTiles("CartoDB.DarkMatter") %>%
       fitBounds(~min(long), ~min(lat), ~max(long), ~max(lat)) 
   })
   
   observe({
-    pal <- colorFactor(c("black", "red", "orange"), domain = c("Fatal", "Serious", "Slight"), ordered = FALSE)
+    pal <- colorFactor(c("#b10026", "#fd8d3c", "#ffeda0"), domain = c("Fatal", "Serious", "Slight"), ordered = TRUE)
     leafletProxy("map", data = casualties()) %>%
       clearShapes() %>% 
-      addPolygons(data = boroughs, fill = F, color = "black", weight = 1.5, group = "London Boroughs") %>% 
+      addPolygons(data = boroughs, fill = F, color = "white", weight = 1.5, group = "London Boroughs") %>% 
       addLayersControl(
         overlayGroups = "London Boroughs",
         options = layersControlOptions(collapsed = FALSE)) %>% 
-      addCircles(~long, ~lat, radius = 6, color = ~pal(severity), fillOpacity = 0.3, opacity = 0.5, popup = ~text)
+      addCircles(~long, ~lat, radius = ~ifelse(severity == "Fatal" | severity == "Serious", 10, 6), color = ~pal(severity), fillOpacity = 0.5, popup = ~text)
   })
   
   
@@ -137,7 +137,7 @@ server <- function(input, output, session) {
       summarise(count = n()) %>% 
       ggvis(~month, ~count, fill = ~severity) %>%
       layer_bars(stroke := "white") %>%
-      scale_nominal("fill", range = c("black", "red", "orange")) %>%
+      scale_nominal("fill", range = c("#b10026", "#fd8d3c", "#ffeda0")) %>%
       add_axis("x", title = "", properties = axis_props(labels=list(angle=270, align="right"))) %>%
       add_axis("y", title = "", format='d') %>%
       add_legend("fill", title = "Severity") %>%  
@@ -187,7 +187,7 @@ server <- function(input, output, session) {
       summarise(count = n()) %>% 
       ggvis(~ageband, ~count, fill = ~severity) %>%
       layer_bars(stroke := "white") %>%
-      scale_nominal("fill", range = c("black", "red", "orange"), label=c("Fatal", "Serious", "Slight")) %>%
+      scale_nominal("fill", range = c("#b10026", "#fd8d3c", "#ffeda0"), label=c("Fatal", "Serious", "Slight")) %>%
       add_axis("x", title = "", properties = axis_props(labels=list(angle=270, align="right"))) %>%
       add_axis("y", title = "", format='d') %>% 
       add_legend("fill", title = "Severity") %>% 
