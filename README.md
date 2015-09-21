@@ -12,4 +12,9 @@ STATS19 road traffic collision data for Greater London are available from [Trans
 
 <br>
 
+<img src="https://github.com/hpartridge/STATS19_scanner/blob/master/STATS19_scanner.png" alt="fig1" width="800">
+
+<br>
+<hr>
+
 ##### The app is available at [https://pracademic.shinyapps.io/STATS19_scanner] (https://pracademic.shinyapps.io/STATS19_scanner)
