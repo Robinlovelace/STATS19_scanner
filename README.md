@@ -12,7 +12,7 @@ STATS19 road traffic collision data for Greater London are available from [Trans
 
 <br>
 
-<img src="https://github.com/hpartridge/STATS19_scanner/blob/master/STATS19_scanner.png" alt="fig1" width="800">
+<img src="https://github.com/hpartridge/STATS19_scanner/blob/master/STATS19_scanner.jpeg" alt="fig1" width="800">
 
 <br>
 
