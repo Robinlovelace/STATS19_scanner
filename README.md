@@ -10,6 +10,12 @@ The filter panel allows the user to plot reported road casualties by year, mode 
 STATS19 road traffic collision data for Greater London are available from [Transport for London]
 (https://www.tfl.gov.uk/corporate/publications-and-reports/road-safety) and information about collision data can be found [here.] (https://www.tfl.gov.uk/cdn/static/cms/documents/collision-data-guide.pdf)
 
+##### Credits
+Some of the code from the STATS19_scanner was adapted from
+[Superzip](http://shiny.rstudio.com/gallery/superzip-example.html) by Joe Cheng
+
+The ui was inspired by [blackspot](http://blackspot.org.uk) by Ben Moore and [Twin Cities Buses](https://gallery.shinyapps.io/086-bus-dashboard/) by Aron Atkins.
+
 <br>
 
 <img src="https://github.com/hpartridge/STATS19_scanner/blob/master/STATS19_scanner.jpg" alt="fig1" width="800">
