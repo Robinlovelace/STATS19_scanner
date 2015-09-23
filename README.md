@@ -12,9 +12,7 @@ STATS19 road traffic collision data for Greater London are available from [Trans
 
 ##### Credits
 Some of the code from the STATS19_scanner was adapted from
-[Superzip](http://shiny.rstudio.com/gallery/superzip-example.html) by Joe Cheng
-
-The ui was inspired by [blackspot](http://blackspot.org.uk) by Ben Moore and [Twin Cities Buses](https://gallery.shinyapps.io/086-bus-dashboard/) by Aron Atkins.
+[Superzip](http://shiny.rstudio.com/gallery/superzip-example.html) by Joe Cheng. The ui was inspired by [blackspot](http://blackspot.org.uk) by Ben Moore and [Twin Cities Buses](https://gallery.shinyapps.io/086-bus-dashboard/) by Aron Atkins.
 
 <br>
 
